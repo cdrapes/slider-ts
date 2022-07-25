@@ -75,7 +75,7 @@ export default css`
     ${thumb};
   }
 
-  input[type="range",disabled] {
+  input[type="range"][disabled] {
     pointer-events:none;
   }
 
