@@ -17,19 +17,15 @@ export class Slider extends LitElement {
   @query('#ax-slider', true) _input!: HTMLInputElement;
   @query('.ax-slider__tooltip') _output!: HTMLOutputElement;
 
-  @property({ type: String })
-  label = '';
+  @property({ type: String }) label = '';
 
-  @property({ type: Number })
-  value = 50;
+  @property({ type: Number }) value = 50;
 
-  @property({ type: Number })
-  min = 0;
+  @property({ type: Number }) min = 0;
 
-  @property({ type: Number })
-  max = 100;
+  @property({ type: Number }) max = 100;
 
-  @property({ type: Boolean }) disabled = false;
+  @property({ type: Boolean }) disabled!: boolean;
 
   @property({ type: Number }) step = 1;
 
@@ -98,13 +94,9 @@ export class Slider extends LitElement {
 
   private syncTrack(percent: number): void {
     const _percent = percent * 100;
-    const fillColor = this.disabled
-      ? `rgb(63, 63, 63, 0.05)`
-      : `rgb(35, 158, 219)`;
+    const fillColor = this.disabled ? `grey` : `rgb(35, 158, 219)`;
 
-    const backgroundColor = this.disabled
-      ? `rgb(63, 63, 63, 0.05)`
-      : `rgba(63, 63, 63, 0.15)`;
+    const backgroundColor = this.disabled ? `grey` : `rgba(63, 63, 63, 0.15)`;
 
     this._input.style.setProperty(
       '--slider-track-background',
@@ -158,8 +150,17 @@ export class Slider extends LitElement {
   }
 
   render(): TemplateResult {
-    const { min, max, onInputChange, onFocus, onBlur, label, value, step } =
-      this;
+    const {
+      min,
+      max,
+      onInputChange,
+      onFocus,
+      onBlur,
+      label,
+      disabled,
+      value,
+      step,
+    } = this;
     return html`
     <div>
       <label
@@ -171,6 +172,7 @@ export class Slider extends LitElement {
         min=${ifDefined(min)}
         max=${ifDefined(max)}
         step=${ifDefined(step)}
+        disabled=${ifDefined(disabled)}
         .value=${live(value.toString())}
         @mousedown=${this.showTooltip}
         @mouseup=${this.hideTooltip}
