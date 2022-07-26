@@ -16,14 +16,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --max-warnings 0",
-    "lint:fix": "eslint src --max-warnings 0 --fix"
+    "lint:fix": "eslint src --max-warnings 0 --fix",
+    "test": "wtr"
   },
   "dependencies": {
     "lit": "^2.2.7"
   },
   "devDependencies": {
+    "@open-wc/testing": "^3.1.6",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
+    "@web/test-runner": "^0.13.31",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.20.0",
     "eslint-plugin-import": "^2.26.0",

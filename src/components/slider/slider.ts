@@ -163,7 +163,7 @@ export class Slider extends LitElement {
     } = this;
     return html`
     <div>
-      <label
+    <label
         for="ax-slider"
         aria-hidden=${label.length ? 'false' : 'true'}
       ><slot name="label">${label}</slot></label>
@@ -172,7 +172,7 @@ export class Slider extends LitElement {
         min=${ifDefined(min)}
         max=${ifDefined(max)}
         step=${ifDefined(step)}
-        disabled=${ifDefined(disabled)}
+        ?disabled=${(disabled)}
         .value=${live(value.toString())}
         @mousedown=${this.showTooltip}
         @mouseup=${this.hideTooltip}
