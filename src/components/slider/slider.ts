@@ -1,23 +1,23 @@
-import { html, LitElement } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { live } from 'lit/directives/live.js';
-import { TemplateResult } from 'lit/html';
-import { SliderEvent } from './slider-display';
-import styles from './slider.styles';
+import { html, LitElement } from "lit";
+import { customElement, property, query, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { live } from "lit/directives/live.js";
+import { TemplateResult } from "lit/html";
+import { SliderEvent } from "./slider-display";
+import styles from "./slider.styles";
 
 /**
  * An Axiom Slider element
  *
  */
 
-@customElement('ax-slider')
+@customElement("ax-slider")
 export class Slider extends LitElement {
-  @query('#ax-slider', true) _input!: HTMLInputElement;
-  @query('.ax-slider__tooltip') _output!: HTMLOutputElement;
+  @query("#ax-slider", true) _input!: HTMLInputElement;
+  @query(".ax-slider__tooltip", true) _output!: HTMLOutputElement;
 
-  @property({ type: String }) label = '';
+  @property({ type: String }) label = "";
 
   @property({ type: Number }) value = 50;
 
@@ -31,6 +31,8 @@ export class Slider extends LitElement {
 
   @property({ type: Boolean }) displayMinMax = true;
 
+  @property({ type: Boolean, attribute: "hide-label" }) hideLabel = true;
+
   @property({ type: Boolean }) tooltip = false;
 
   @state() private displayTooltip = false;
@@ -43,21 +45,29 @@ export class Slider extends LitElement {
 
     this.updateComplete
       .then(() => {
-        this.syncUI();
-        this.onInputChange();
-        this.resizeObserver.observe(this._input);
+        if (this._input) {
+          this.syncUI();
+          this.onInputChange();
+          this.resizeObserver.observe(this._input);
+        }
       })
       .catch((e) => {
         console.log(e);
       });
+
+    if (!this.label) {
+      console.error(
+        'Please provide a label for the slider. The label can be hidden using the "hide-label" attribute if desired.'
+      );
+    }
   }
 
   updated(changedProperties: Map<string, unknown>): void {
     if (
-      changedProperties.has('value') ||
-      changedProperties.has('min') ||
-      changedProperties.has('max') ||
-      changedProperties.has('disabled')
+      changedProperties.has("value") ||
+      changedProperties.has("min") ||
+      changedProperties.has("max") ||
+      changedProperties.has("disabled")
     ) {
       this.syncUI();
     }
@@ -66,14 +76,16 @@ export class Slider extends LitElement {
   static styles = styles;
 
   onInputChange(): void {
-    this.value = parseFloat(this._input.value);
+    if (this._input) {
+      this.value = parseFloat(this._input.value);
 
-    const event = new CustomEvent<SliderEvent>('ax-slider-change', {
-      bubbles: true,
-      composed: true,
-      detail: { value: this.value },
-    });
-    this.dispatchEvent(event);
+      const event = new CustomEvent<SliderEvent>("ax-slider-change", {
+        bubbles: true,
+        composed: true,
+        detail: { value: this.value },
+      });
+      this.dispatchEvent(event);
+    }
   }
 
   private onFocus(): void {
@@ -93,15 +105,17 @@ export class Slider extends LitElement {
   }
 
   private syncTrack(percent: number): void {
-    const _percent = percent * 100;
-    const fillColor = this.disabled ? `grey` : `rgb(35, 158, 219)`;
+    if (this._input) {
+      const _percent = percent * 100;
+      const fillColor = this.disabled ? `grey` : `rgb(35, 158, 219)`;
 
-    const backgroundColor = this.disabled ? `grey` : `rgba(63, 63, 63, 0.15)`;
+      const backgroundColor = this.disabled ? `grey` : `rgba(63, 63, 63, 0.15)`;
 
-    this._input.style.setProperty(
-      '--slider-track-background',
-      `linear-gradient(to right, ${fillColor} ${_percent}%, ${backgroundColor} ${_percent}%)`
-    );
+      this._input.style.setProperty(
+        "--slider-track-background",
+        `linear-gradient(to right, ${fillColor} ${_percent}%, ${backgroundColor} ${_percent}%)`
+      );
+    }
   }
 
   private syncTooltip(percent: number): void {
@@ -109,7 +123,7 @@ export class Slider extends LitElement {
       const inputWidth = this._input.offsetWidth;
       const tooltipWidth = this._output.offsetWidth;
       const thumbSize = getComputedStyle(this._input).getPropertyValue(
-        '--slider-thumb-size'
+        "--slider-thumb-size"
       );
       const percentAsWidth = inputWidth * percent;
       const x = `${percentAsWidth}px - ${percent} * ${thumbSize}`;
@@ -132,20 +146,22 @@ export class Slider extends LitElement {
 
   private minMaxElement(): TemplateResult | null {
     return this.displayMinMax
-      ? html`
-    <div class="slider__min-max">
-      <span>${this.min}</span>
-      <span>${this.max}</span>
-    </div>`
+      ? html` <div class="slider__min-max">
+          <span>${this.min}</span>
+          <span>${this.max}</span>
+        </div>`
       : null;
   }
 
   private tooltipElement(): TemplateResult | null {
     return this.tooltip
-      ? html`<output class=${classMap({
-          'ax-slider__tooltip': true,
-          'ax-slider__tooltip--visible': this.displayTooltip,
-        })}>${this.value}</output>`
+      ? html`<output
+          class=${classMap({
+            "ax-slider__tooltip": true,
+            "ax-slider__tooltip--visible": this.displayTooltip,
+          })}
+          >${this.value}</output
+        >`
       : null;
   }
 
@@ -160,34 +176,39 @@ export class Slider extends LitElement {
       disabled,
       value,
       step,
+      hideLabel,
+      showTooltip,
+      hideTooltip,
     } = this;
-    return html`
-    <div>
-    <label
+    return html` <div>
+      <label
         for="ax-slider"
-        aria-hidden=${label.length ? 'false' : 'true'}
-      ><slot name="label">${label}</slot></label>
+        class=${classMap({
+          "visually-hidden": hideLabel,
+        })}
+        ><slot name="label">${label}</slot></label
+      >
       <input
         id="ax-slider"
         min=${ifDefined(min)}
         max=${ifDefined(max)}
         step=${ifDefined(step)}
-        ?disabled=${(disabled)}
+        ?disabled=${disabled}
         .value=${live(value.toString())}
-        @mousedown=${this.showTooltip}
-        @mouseup=${this.hideTooltip}
+        @mousedown=${showTooltip}
+        @mouseup=${hideTooltip}
         @input=${onInputChange}
         @focus=${onFocus}
         @blur=${onBlur}
-        type="range"/>
-        ${this.tooltipElement()}
-        ${this.minMaxElement()}
+        type="range"
+      />
+      ${this.tooltipElement()} ${this.minMaxElement()}
     </div>`;
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'ax-slider': Slider;
+    "ax-slider": Slider;
   }
 }

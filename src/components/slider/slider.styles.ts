@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from "lit";
 
 const track = css`
   height: var(--slider-track-size);
@@ -22,23 +22,25 @@ const thumb = css`
 `;
 
 export default css`
-:host {
-  --global-spacing-x1: calc(0.25rem * 1);
-  --global-spacing-x2: calc(0.25rem * 2);
-  --global-spacing-x3: calc(0.25rem * 3);
-  --global-spacing-x4: calc(0.25rem * 4);
-  --global-spacing-x5: calc(0.25rem * 5);
-  --global-spacing-x6: calc(0.25rem * 6);
-  --global-spacing-x7: calc(0.25rem * 7);
-  --global-spacing-x8: calc(0.25rem * 8);
-  --slider-thumb-size: 24px;
-  --slider-track-size: var(--global-spacing-x2);
-  --slider-thumb-background-color: white;
-  --slider-thumb-box-shadow: 0 0.0625rem 0.1875rem 0 hsla(0, 0%, 25%, 0.14), 0 0.0625rem 0.125rem 0.03125rem hsla(0, 0%, 25%, 0.15);
-  --slider-thumb-focus-box-shadow: inset 0px 0px 0px 2px rgb(35, 158, 219), 0px 0px 0px 2px rgba(35, 158, 219, 0.3);
+  :host {
+    --global-spacing-x1: calc(0.25rem * 1);
+    --global-spacing-x2: calc(0.25rem * 2);
+    --global-spacing-x3: calc(0.25rem * 3);
+    --global-spacing-x4: calc(0.25rem * 4);
+    --global-spacing-x5: calc(0.25rem * 5);
+    --global-spacing-x6: calc(0.25rem * 6);
+    --global-spacing-x7: calc(0.25rem * 7);
+    --global-spacing-x8: calc(0.25rem * 8);
+    --slider-thumb-size: 24px;
+    --slider-track-size: var(--global-spacing-x2);
+    --slider-thumb-background-color: white;
+    --slider-thumb-box-shadow: 0 0.0625rem 0.1875rem 0 hsla(0, 0%, 25%, 0.14),
+      0 0.0625rem 0.125rem 0.03125rem hsla(0, 0%, 25%, 0.15);
+    --slider-thumb-focus-box-shadow: inset 0px 0px 0px 2px rgb(35, 158, 219),
+      0px 0px 0px 2px rgba(35, 158, 219, 0.3);
     position: relative;
     --tooltip-offset: 4px;
-}
+  }
 
   ::slotted([slot="min"]) {
     border: 2px solid green;
@@ -46,40 +48,40 @@ export default css`
     height: 20px;
   }
 
-  .slider__min-max{
+  .slider__min-max {
     display: flex;
     justify-content: space-between;
   }
 
-   input[type="range"]::-webkit-slider-runnable-track {
+  input[type="range"]::-webkit-slider-runnable-track {
     ${track};
   }
 
-   input[type="range"]::-moz-range-track {
+  input[type="range"]::-moz-range-track {
     ${track};
   }
 
-   input[type="range"]::-ms-track {
+  input[type="range"]::-ms-track {
     ${track};
   }
 
-   input[type="range"]::-webkit-slider-thumb {
+  input[type="range"]::-webkit-slider-thumb {
     ${thumb};
   }
 
-   input[type="range"]::-moz-range-thumb {
+  input[type="range"]::-moz-range-thumb {
     ${thumb};
   }
 
-   input[type="range"]::-ms-thumb {
+  input[type="range"]::-ms-thumb {
     ${thumb};
   }
 
   input[type="range"][disabled] {
-    pointer-events:none;
+    pointer-events: none;
   }
 
-  input[type='range'] {
+  input[type="range"] {
     width: 100%;
     height: var(--slider-track-size);
     background-image: var(--slider-track-background);
@@ -88,7 +90,7 @@ export default css`
     -webkit-appearance: none;
   }
 
-  input[type='range']:focus-visible {
+  input[type="range"]:focus-visible {
     outline: none;
   }
 
@@ -115,10 +117,19 @@ export default css`
     pointer-events: none;
     top: calc(-1 * var(--slider-thumb-size) - var(--tooltip-offset));
   }
-  .ax-slider__tooltip--visible  {
+  .ax-slider__tooltip--visible {
     opacity: 1;
   }
 
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
 `;
 
 // tooltip info /* https://css-tricks.com/value-bubbles-for-range-inputs/ /*
